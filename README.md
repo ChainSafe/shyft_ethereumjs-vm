@@ -2,20 +2,18 @@
 
 [![NPM Package](https://img.shields.io/npm/v/ethereumjs-vm.svg?style=flat-square)](https://www.npmjs.org/package/ethereumjs-vm)
 [![Build Status](https://img.shields.io/travis/ethereumjs/ethereumjs-vm.svg?branch=master&style=flat-square)](https://travis-ci.org/ethereumjs/ethereumjs-vm)
+[![Coverage Status](https://img.shields.io/coveralls/ethereumjs/ethereumjs-vm.svg?style=flat-square)](https://coveralls.io/r/ethereumjs/ethereumjs-vm)
 [![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs-lib.svg?style=flat-square)](https://gitter.im/ethereum/ethereumjs-lib) or #ethereumjs on freenode
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
-Implements Ethereum's VM in JS
+Implements Ethereum's VM in Javascript.
 
-#### Note on Byzantium Support:
+#### Fork Support
 
-This repository has now been updated with the latest 
-[Byzantium changes](https://github.com/ethereumjs/ethereumjs-vm/pull/161)
-(``2.3.x`` [releases](https://github.com/ethereumjs/ethereumjs-vm/releases)).
+This library always only supports the currently active Ethereum mainnet fork rules with its latest release, old fork rules are dropped with new releases once a HF occured.
 
-For a ``Spurious Dragon``/``EIP 150`` compatible version of this library install the
-latest of the ``2.2.x`` series (see [Changelog](./CHANGELOG.md)).
+The current major [2.3.x](https://github.com/ethereumjs/ethereumjs-vm/releases) release series supports the  [Byzantium](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-609.md) fork changes. For a [Spurious Dragon](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-607.md) compatible version of this library install the latest of the ``2.2.x`` series (see [Changelog](./CHANGELOG.md)).
 
 # INSTALL
 `npm install ethereumjs-vm`
@@ -55,14 +53,13 @@ To build for standalone use in the browser, install `browserify` and check [run-
   - [`VM` debugging hooks](#vm-debugging-hooks)
     - [`vm.onStep`](#vmonstep)
 
-### `new VM([StateTrie], [blockchain])`
+### `new VM([opts])`
 Creates a new VM object
-- `StateTrie` - The [Patricia Merkle Tree](https://github.com/wanderer/merkle-patricia-tree) that contains the state. If no trie is given the `VM` will create an in memory trie.
-- `blockchain` - an instance of the [`Blockchain`](https://github.com/ethereum/ethereumjs-lib/blob/master/docs/blockchain.md). If no blockchain is given a fake blockchain will be used.
 - `opts`
-  - `state` - the state trie
-  - `blockchain` - an instance of ethereumjs-blockchain
-  - `activatePrecompiles` - create entries in the state tree for the precompiled contracts
+  - `stateManager` - A state manager instance (**EXPERIMENTAL** - unstable API)
+  - `state` - A merkle-patricia-tree instance for the state tree (ignored if `stateManager` is passed)
+  - `blockchain` - A blockchain object for storing/retrieving blocks (ignored if `stateManager` is passed)
+  - `activatePrecompiles` - Create entries in the state tree for the precompiled contracts
 
 ### `VM` methods
 
@@ -269,6 +266,8 @@ It is also possible to only run the tests from the skip lists:
 ### Debugging
 
 #### Local Debugging
+
+For state tests you can use the ``--jsontrace`` flag to output opcode trace information.
 
 Blockchain tests support `--debug` to verify the postState:
 
